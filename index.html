@@ -87,6 +87,15 @@ textarea:focus,input:focus{outline:none;border-color:var(--purple);box-shadow:0 
 #panel-coldforge .cf-note{font-size:0.78em;color:var(--txt3);margin-top:6px;font-style:italic}
 #panel-coldforge .cf-add-btn{margin-top:6px;font-size:0.8em;padding:4px 10px;cursor:pointer;border:1px dashed var(--border);border-radius:4px;background:var(--bg);color:var(--txt2)}
 
+/* 圓切線幾何 */
+#panel-circle-geom .cg-sv-wrap{background:var(--bg2);border-radius:14px;padding:24px;text-align:center;min-height:260px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border2)}#panel-circle-geom .cg-sv-wrap svg{max-width:100%;height:auto}
+#panel-circle-geom .cg-foot{display:flex;justify-content:space-between;margin-top:10px;font-size:12px;color:var(--txt3)}
+#panel-circle-geom .cg-result{background:linear-gradient(135deg,#0071e3,#5856d6);border-radius:16px;padding:28px 32px;text-align:center;margin-bottom:12px}#panel-circle-geom .cg-result .rl{color:rgba(255,255,255,.75);font-size:15px;margin-bottom:8px}#panel-circle-geom .cg-result .rv{color:#fff;font-size:42px;font-weight:700}#panel-circle-geom .cg-result .ru{color:rgba(255,255,255,.6);font-size:14px;margin-top:4px}#panel-circle-geom .cg-result .rd{color:rgba(255,255,255,.5);font-size:13px;margin-top:8px}
+#panel-circle-geom .cg-formula{padding:16px 22px;background:var(--bg2);border-radius:12px;font-size:15px;color:var(--txt2);text-align:center;font-family:'SF Mono',Menlo,monospace;line-height:1.8}#panel-circle-geom .cg-formula strong{color:var(--blue)}
+#panel-circle-geom .cg-row{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:10px}#panel-circle-geom .cg-slider{display:flex;align-items:center;gap:14px;margin-top:10px}#panel-circle-geom .cg-slider input[type=range]{flex:1;-webkit-appearance:none;height:4px;border-radius:2px;background:var(--border2);outline:none}#panel-circle-geom .cg-slider input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--blue);cursor:pointer}
+#panel-circle-geom .cg-sv{min-width:52px;text-align:right;font-size:15px;font-weight:700;color:var(--blue)}
+@media(max-width:500px){#panel-circle-geom .cg-row{grid-template-columns:1fr;gap:16px}#panel-circle-geom .cg-result .rv{font-size:34px}}
+
 /* 錐形件 */
 #panel-cone .cone-form{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 #panel-cone .cone-field{margin-bottom:16px}
@@ -137,6 +146,10 @@ textarea:focus,input:focus{outline:none;border-color:var(--purple);box-shadow:0 
     <div class="app-card" data-app="coldforge">
       <div class="app-icon">🛠️</div>
       <div class="app-name">冷鍛計算機</div>
+    </div>
+    <div class="app-card" data-app="circle-geom">
+      <div class="app-icon">⭕</div>
+      <div class="app-name">圓切線幾何</div>
     </div>
   </div>
 
@@ -257,6 +270,23 @@ textarea:focus,input:focus{outline:none;border-color:var(--purple);box-shadow:0 
     </div>
   </div>
 
+  <!-- 圓切線幾何計算器 -->
+  <div class="panel" id="panel-circle-geom">
+    <div class="section">
+      <div class="section-title">圓直徑與夾角</div>
+      <div class="cg-row">
+        <div><label style="font-size:14px;font-weight:600;color:var(--txt2);display:block;margin-bottom:10px">圓直徑 (D)</label><input type="number" id="cgiD" value="3" step="0.01" min="0.05" max="20" oninput="cgSyncSl()" style="width:100%;padding:13px 16px;border:1.5px solid var(--border2);border-radius:10px;background:var(--input-bg);color:var(--txt);font-size:17px"><div class="cg-slider"><input type="range" id="cgsD" min="0.05" max="20" step="0.01" value="3" oninput="cgSyncInp()"><span class="cg-sv" id="cgvD">3.00</span></div></div>
+        <div><label style="font-size:14px;font-weight:600;color:var(--txt2);display:block;margin-bottom:10px">夾角 (θ)</label><input type="number" id="cgiA" value="90" step="1" min="1" max="179" oninput="cgSyncSlA()" style="width:100%;padding:13px 16px;border:1.5px solid var(--border2);border-radius:10px;background:var(--input-bg);color:var(--txt);font-size:17px"><div class="cg-slider"><input type="range" id="cgsA" min="1" max="179" step="1" value="90" oninput="cgSyncInpA()"><span class="cg-sv" id="cgvA">90°</span></div></div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="cg-sv-wrap"><svg id="cgSvg" viewBox="0 0 400 320" width="400" height="320"></svg></div>
+      <div class="cg-foot"><span>🔵 半徑 r = <span id="cgR">1.50</span></span><span>📐 半角 = <span id="cgHA">45.0</span>°</span></div>
+    </div>
+    <div class="cg-result"><div class="rl">📏 頂點 → 圓心距離</div><div class="rv" id="cgDist">2.12</div><div class="ru">mm</div><div class="rd" id="cgDetail">D=3 θ=90° r/sin(θ/2)</div></div>
+    <div class="section"><div class="cg-formula"><strong>公式：</strong>距離 = r ÷ sin(θ/2) = <span id="cgFml">1.50÷sin(45.0°) = 2.12</span></div></div>
+  </div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -270,7 +300,7 @@ $('themeBtn').textContent=savedTheme==='dark'?'☀️':'🌙';
 $('themeBtn').onclick=()=>{const now=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=now;localStorage.setItem('theme',now);$('themeBtn').textContent=now==='dark'?'☀️':'🌙';};
 
 // 導航
-const titles={'qrcode':'QR 碼生成器','round-weight':'圓棒重量計算器','cone':'錐形件計算機','coldforge':'多工位冷鍛計算機'};
+const titles={'qrcode':'QR 碼生成器','round-weight':'圓棒重量計算器','cone':'錐形件計算機','coldforge':'多工位冷鍛計算機','circle-geom':'圓切線幾何計算器'};
 document.querySelectorAll('.app-card').forEach(card=>{card.onclick=()=>{const app=card.dataset.app;$('homeScreen').style.display='none';$('backBtn').style.display='block';$('headerTitle').textContent=titles[app];document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));$(`panel-${app}`).classList.add('active');if(app==='round-weight')rwInit();};});
 $('backBtn').onclick=()=>{$('homeScreen').style.display='grid';$('backBtn').style.display='none';$('headerTitle').textContent='工具箱';document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));};
 
@@ -322,6 +352,14 @@ function cfRed(){const wd=parseFloat($('cfWire')?.value);const areas=[...documen
 function cfAddSta(){const c=$('staInputs'),d=document.createElement('div');d.className='cf-field';d.style.marginTop='4px';const n=c.children.length+1;d.innerHTML='<input type="number" placeholder="工位'+n+' 斷面積" step="0.01" class="sta-area" oninput="cfRed()">';c.appendChild(d);}
 function cfDia2Area(){const d=parseFloat($('cfDiaIn')?.value);if(d>0){alert('直徑 '+d+' mm → 面積 = '+(Math.PI*Math.pow(d/2,2)).toFixed(2)+' mm²\n請複製貼到上方工位輸入欄');$('cfDiaIn').value='';}}
 function cfUpset(){const d=parseFloat($('cfUDia')?.value),L=parseFloat($('cfULen')?.value);const r=$('upsetResult');if(!d||!L||d<=0||L<=0){r.innerHTML='<em>請輸入直徑與墩粗長度</em>';return;}const S=L/d;let st,cls;if(S<=2.0){st='✅安全，無挫曲風險';cls='cf-ok';}else if(S<=2.5){st='⚠邊界值，需注意模具導向';cls='cf-warn';}else{st='❌易挫曲！需分段墩粗';cls='cf-bad';}r.innerHTML='<strong>墩粗比 S = '+L+'/'+d+' = </strong><span class="cf-big '+cls+'">'+S.toFixed(2)+'</span><br><span class="'+cls+'">'+st+'</span>'+(S>2.5?'<br><span class="cf-warn">建議分兩段墩粗</span>':'');}
+// 圓切線幾何
+function cgCalc(){const D=parseFloat($('cgiD').value)||0.05,deg=parseFloat($('cgiA').value)||90,r=D/2,hD=deg/2,d=r/Math.sin(hD*Math.PI/180);$('cgR').textContent=r.toFixed(2);$('cgHA').textContent=hD.toFixed(1);$('cgDist').textContent=d.toFixed(2);$('cgDetail').textContent='D='+D.toFixed(2)+' θ='+deg+'° r/sin(θ/2)';$('cgFml').textContent=r.toFixed(2)+'÷sin('+hD.toFixed(1)+'°) = '+d.toFixed(2)+' mm';cgSvg();}
+function cgSyncSl(){const d=parseFloat($('cgsD').value);$('cgiD').value=d.toFixed(2);$('cgvD').textContent=d.toFixed(2);cgCalc();}
+function cgSyncInp(){let d=parseFloat($('cgiD').value);if(isNaN(d)||d<0.05)d=0.05;if(d>20)d=20;$('cgsD').value=d;$('cgvD').textContent=d.toFixed(2);cgCalc();}
+function cgSyncSlA(){const a=parseFloat($('cgsA').value);$('cgiA').value=a;$('cgvA').textContent=a+'°';cgCalc();}
+function cgSyncInpA(){let a=parseFloat($('cgiA').value);if(isNaN(a)||a<1)a=1;if(a>179)a=179;$('cgsA').value=a;$('cgvA').textContent=a+'°';cgCalc();}
+function cgSvg(){const D=parseFloat($('cgiD').value)||3,deg=parseFloat($('cgiA').value)||90,r=D/2,hD=deg/2,dist=r/Math.sin(hD*Math.PI/180);const isDark=document.documentElement.dataset.theme==='dark';const clr=isDark?'#aaa':'#444',dimClr=isDark?'#0a84ff':'#0071e3',circleClr=isDark?'#ff9f0a':'#ff6b35',lineClr=isDark?'#5e9eff':'#2563eb',bgClr=isDark?'#2a2a2e':'#f8f9fa';const cx=200,cy=55,availH=230,tn=dist+r+12;let s=availH/tn;if(s>7)s=7;if(s<0.5)s=0.5;const pd=dist*s,pr=r*s,cX=cx,cY=cy+pd;const hR=hD*Math.PI/180;const p1x=-Math.cos(-hR),p1y=Math.sin(-hR),t1x=cX+pr*p1x,t1y=cY+pr*p1y;const p2x=-Math.cos(hR),p2y=Math.sin(hR),t2x=cX+pr*p2x,t2y=cY+pr*p2y;const ext=200,l1ex=cx+ext*Math.sin(-hR),l1ey=cy+ext*Math.cos(-hR),l2ex=cx+ext*Math.sin(hR),l2ey=cy+ext*Math.cos(hR);let svg='<svg viewBox="0 0 400 320" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="320" fill="'+bgClr+'" rx="4"/><defs><marker id="cgar1" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-auto"><path d="M0,0 L10,5 L0,10 Z" fill="'+dimClr+'"/></marker><marker id="cgar2" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-auto"><path d="M0,0 L10,5 L0,10 Z" fill="'+dimClr+'"/></marker></defs>';svg+='<line x1="'+cx+'" y1="'+cy+'" x2="'+l1ex+'" y2="'+l1ey+'" stroke="'+lineClr+'" stroke-width="2.5" stroke-linecap="round"/><line x1="'+cx+'" y1="'+cy+'" x2="'+l2ex+'" y2="'+l2ey+'" stroke="'+lineClr+'" stroke-width="2.5" stroke-linecap="round"/>';svg+='<circle cx="'+cX+'" cy="'+cY+'" r="'+pr+'" fill="none" stroke="'+circleClr+'" stroke-width="2.5"/>';svg+='<circle cx="'+t1x+'" cy="'+t1y+'" r="4" fill="'+circleClr+'" stroke="#fff" stroke-width="1.5"/><circle cx="'+t2x+'" cy="'+t2y+'" r="4" fill="'+circleClr+'" stroke="#fff" stroke-width="1.5"/>';svg+='<circle cx="'+cx+'" cy="'+cy+'" r="4" fill="'+dimClr+'" stroke="#fff" stroke-width="1.5"/>';svg+='<line x1="'+cX+'" y1="'+cY+'" x2="'+cx+'" y2="'+cy+'" stroke="'+dimClr+'" stroke-width="1.5" stroke-dasharray="6,3"/>';svg+='<text x="'+(cx+(cX-cx)/2+8)+'" y="'+(cy+(cY-cy)/2+4)+'" fill="'+dimClr+'" font-size="12" font-weight="600">d='+dist.toFixed(2)+'</text>';svg+='</svg>';$('cgSvg').innerHTML=svg;}
+
 function cfUtil(){const pw=parseFloat($('cfPW')?.value),ww=parseFloat($('cfWW')?.value);const r=$('utilResult');if(!pw||!ww||pw<=0||ww<=0){r.innerHTML='<em>請輸入成品與用料重量</em>';return;}const u=(pw/ww)*100,sc=ww-pw;let cls=u>=90?'cf-ok':u>=75?'cf-warn':'cf-bad';r.innerHTML='<strong>利用率：</strong><span class="cf-big '+cls+'">'+u.toFixed(1)+'%</span><br><strong>廢料：</strong>'+sc.toFixed(2)+' g/件 ('+(100-u).toFixed(1)+'%)'+(u>=95?'<br><span class="cf-ok">👍優秀</span>':u<75?'<br><span class="cf-warn">⚠廢料偏高</span>':'');}
 </script>
 </body>
