@@ -67,6 +67,26 @@ textarea:focus,input:focus{outline:none;border-color:var(--purple);box-shadow:0 
 #panel-round-weight .dtbl .tot{font-weight:700;color:var(--blue)}
 #panel-round-weight .svg-wrap{background:var(--bg);border-radius:12px;padding:8px;border:1px solid var(--border)}
 #panel-round-weight .svg-wrap svg{width:100%;height:220px;display:block}
+/* 冷鍛計算機 */
+#panel-coldforge .cf-card{background:var(--bg);border-radius:var(--radius);padding:16px;margin-bottom:12px;border:0.5px solid var(--border)}
+#panel-coldforge .cf-title{font-size:1.15em;color:var(--txt);border-bottom:2px solid var(--red);padding-bottom:8px;margin-bottom:14px;font-weight:600}
+#panel-coldforge .cf-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+#panel-coldforge .cf-field{flex:1;min-width:140px}
+#panel-coldforge .cf-field label{display:block;font-size:0.85em;color:var(--txt2);margin-bottom:4px;font-weight:bold}
+#panel-coldforge .cf-field input,#panel-coldforge .cf-field select{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:0.95em;background:var(--bg);color:var(--txt)}
+#panel-coldforge .cf-field input:focus,#panel-coldforge .cf-field select:focus{border-color:var(--red);outline:none;box-shadow:0 0 0 2px var(--red-light)}
+#panel-coldforge .cf-field .unit{font-size:0.75em;color:var(--txt3);margin-top:2px}
+#panel-coldforge .cf-res{margin-top:10px;padding:12px 16px;background:var(--bg2);border-radius:8px;border-left:4px solid var(--red);font-size:0.95em;line-height:1.7}
+#panel-coldforge .cf-res strong{color:var(--red)}
+#panel-coldforge .cf-ok{color:var(--green)}
+#panel-coldforge .cf-warn{color:var(--amber)}
+#panel-coldforge .cf-bad{color:var(--red)}
+#panel-coldforge .cf-big{font-size:1.2em;font-weight:bold}
+#panel-coldforge .cf-two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:600px){#panel-coldforge .cf-two{grid-template-columns:1fr}#panel-coldforge .cf-row{flex-direction:column}}
+#panel-coldforge .cf-note{font-size:0.78em;color:var(--txt3);margin-top:6px;font-style:italic}
+#panel-coldforge .cf-add-btn{margin-top:6px;font-size:0.8em;padding:4px 10px;cursor:pointer;border:1px dashed var(--border);border-radius:4px;background:var(--bg);color:var(--txt2)}
+
 /* 錐形件 */
 #panel-cone .cone-form{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 #panel-cone .cone-field{margin-bottom:16px}
@@ -113,6 +133,10 @@ textarea:focus,input:focus{outline:none;border-color:var(--purple);box-shadow:0 
     <div class="app-card" data-app="cone">
       <div class="app-icon">📐</div>
       <div class="app-name">錐形件計算機</div>
+    </div>
+    <div class="app-card" data-app="coldforge">
+      <div class="app-icon">🛠️</div>
+      <div class="app-name">冷鍛計算機</div>
     </div>
   </div>
 
@@ -189,7 +213,49 @@ textarea:focus,input:focus{outline:none;border-color:var(--purple);box-shadow:0 
       <div class="cone-legend"><span><span class="ldot" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--blue);margin-right:4px"></span> 已知</span><span><span class="ldot" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--amber);margin-right:4px"></span> 自動計算</span></div>
     </div>
   </div>
-</div>
+  <!-- 冷鍛計算機 -->
+  <div class="panel" id="panel-coldforge">
+    <div class="section">
+      <div class="section-title">① 鍛造噸位估算</div>
+      <div class="cf-row">
+        <div class="cf-field"><label>成形方式</label><select id="cfType" onchange="cfTon()"><option value="heading">打頭 (Heading)</option><option value="extrude_fwd">前向擠出</option><option value="extrude_bwd">後向擠出</option><option value="trimming">剪切/修邊</option><option value="coining">壓印</option></select></div>
+        <div class="cf-field"><label>材料</label><select id="cfMaterial" onchange="cfTon()"><option value="lowC">低碳鋼 250MPa</option><option value="midC" selected>中碳鋼 350MPa</option><option value="alloy">合金鋼 500MPa</option><option value="stainless">不鏽鋼 520MPa</option><option value="aluminum">鋁合金 150MPa</option><option value="copper">銅合金 200MPa</option></select></div>
+        <div class="cf-field"><label>自訂降伏 (MPa)</label><input type="number" id="cfYieldC" placeholder="覆蓋預設" step="1" onchange="cfTon()"><div class="unit">空白則用材料值</div></div>
+      </div>
+      <div class="cf-row">
+        <div class="cf-field"><label>投影面積 (mm²)</label><input type="number" id="cfArea" placeholder="受力方向投影面積" step="0.1" oninput="cfTon()"><div class="unit">例：圓形 = π×(D/2)²</div></div>
+        <div class="cf-field"><label>直徑 (mm)</label><input type="number" id="cfDia" placeholder="快速換算面積" step="0.1" oninput="cfAreaFromDia()"><div class="unit">輸入直徑自動算面積</div></div>
+        <div class="cf-field"><label>安全係數</label><select id="cfSF" onchange="cfTon()"><option value="1.2">1.2 連續生產</option><option value="1.3" selected>1.3 一般建議</option><option value="1.5">1.5 間歇/新模</option><option value="2.0">2.0 保守</option></select></div>
+      </div>
+      <div class="cf-res" id="tonResult"><em>請輸入面積與選擇材料</em></div>
+      <div class="cf-note">公式：F = C × Y × A × S | C=拘束係數 Y=降伏強度 A=面積 S=安全係數</div>
+    </div>
+    <div class="section">
+      <div class="section-title">② 減面率計算（多工位）</div>
+      <div class="cf-two"><div><div class="cf-field"><label>線材直徑 (mm)</label><input type="number" id="cfWire" placeholder="原始線徑" step="0.01" oninput="cfRed()"></div><div style="margin-top:10px"><label style="font-size:0.85em;font-weight:bold;color:var(--txt2)">各工位斷面積 (mm²)</label><div id="staInputs"><div class="cf-field" style="margin-top:4px"><input type="number" placeholder="工位1 斷面積" step="0.01" class="sta-area" oninput="cfRed()"></div><div class="cf-field" style="margin-top:4px"><input type="number" placeholder="工位2 斷面積" step="0.01" class="sta-area" oninput="cfRed()"></div><div class="cf-field" style="margin-top:4px"><input type="number" placeholder="工位3 斷面積" step="0.01" class="sta-area" oninput="cfRed()"></div></div><button class="cf-add-btn" onclick="cfAddSta()">+ 增加工位</button><div class="unit" style="margin-top:4px">直徑→面積：<input id="cfDiaIn" type="number" placeholder="直徑" step="0.01" style="width:80px;padding:4px" onchange="cfDia2Area()"></div></div></div><div class="cf-res" id="redResult" style="margin-top:0"><em>請輸入線徑與各工位面積</em></div></div>
+      <div class="cf-note">減面率 R = (A₀−A₁)÷A₀×100% | 單站建議 ≤30%（打頭可到60%）</div>
+    </div>
+    <div class="cf-two">
+      <div class="section">
+        <div class="section-title">③ 墩粗比檢查</div>
+        <div class="cf-row">
+          <div class="cf-field"><label>材料直徑 d₀ (mm)</label><input type="number" id="cfUDia" placeholder="線徑" step="0.1" oninput="cfUpset()"></div>
+          <div class="cf-field"><label>墩粗長度 L₀ (mm)</label><input type="number" id="cfULen" placeholder="露出模具外長度" step="0.1" oninput="cfUpset()"></div>
+        </div>
+        <div class="cf-res" id="upsetResult"><em>請輸入直徑與墩粗長度</em></div>
+        <div class="cf-note">墩粗比 S = L₀/d₀ | S≤2.0 安全 | 2.0&lt;S≤2.5 需注意 | S&gt;2.5 易挫曲</div>
+      </div>
+      <div class="section">
+        <div class="section-title">④ 材料利用率</div>
+        <div class="cf-row">
+          <div class="cf-field"><label>成品重量 (g)</label><input type="number" id="cfPW" placeholder="單件淨重" step="0.01" oninput="cfUtil()"></div>
+          <div class="cf-field"><label>用料重量 (g)</label><input type="number" id="cfWW" placeholder="每件線材重" step="0.01" oninput="cfUtil()"></div>
+        </div>
+        <div class="cf-res" id="utilResult"><em>請輸入成品與用料重量</em></div>
+        <div class="cf-note">利用率 = 成品重÷用料重×100% | 鋼材密度約 7.85 g/cm³</div>
+      </div>
+    </div>
+  </div>
 
 <div class="toast" id="toast"></div>
 
@@ -204,7 +270,7 @@ $('themeBtn').textContent=savedTheme==='dark'?'☀️':'🌙';
 $('themeBtn').onclick=()=>{const now=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=now;localStorage.setItem('theme',now);$('themeBtn').textContent=now==='dark'?'☀️':'🌙';};
 
 // 導航
-const titles={'qrcode':'QR 碼生成器','round-weight':'圓棒重量計算器','cone':'錐形件計算機'};
+const titles={'qrcode':'QR 碼生成器','round-weight':'圓棒重量計算器','cone':'錐形件計算機','coldforge':'多工位冷鍛計算機'};
 document.querySelectorAll('.app-card').forEach(card=>{card.onclick=()=>{const app=card.dataset.app;$('homeScreen').style.display='none';$('backBtn').style.display='block';$('headerTitle').textContent=titles[app];document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));$(panel-${app}).classList.add('active');if(app==='round-weight')rwInit();};});
 $('backBtn').onclick=()=>{$('homeScreen').style.display='grid';$('backBtn').style.display='none';$('headerTitle').textContent='工具箱';document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));};
 
@@ -246,6 +312,17 @@ $('coneCalc').onclick=()=>{const vals={};CK.forEach(k=>vals[k]=parseFloat(CI[k].
 function coneDraw(D,d,L,A,weight){const c=$('coneCanvas'),W=c.width,H=c.height,ctx=c.getContext('2d');ctx.clearRect(0,0,W,H);if(!D||!d||!L){ctx.fillStyle='var(--bg2)';ctx.fillRect(0,0,W,H);ctx.fillStyle='var(--txt3)';ctx.font='15px sans-serif';ctx.textAlign='center';ctx.fillText('填寫尺寸後查看預覽',W/2,H/2);return;}const scale=Math.min((W-80)/Math.max(D,d),(H-100)/L),rD=D*scale/2,rd=d*scale/2,rL=L*scale,ctrX=W/2,botY=H-40,topY=botY-rL;ctx.strokeStyle='var(--txt)';ctx.lineWidth=2.5;ctx.fillStyle='rgba(74,144,217,0.15)';ctx.beginPath();ctx.moveTo(ctrX-rD,botY);ctx.lineTo(ctrX+rD,botY);ctx.lineTo(ctrX+rd,topY);ctx.lineTo(ctrX-rd,topY);ctx.closePath();ctx.fill();ctx.stroke();ctx.setLineDash([4,5]);ctx.strokeStyle='var(--txt3)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(ctrX,topY);ctx.lineTo(ctrX,botY+10);ctx.stroke();ctx.setLineDash([]);function dim(y,lb,x1,x2){ctx.strokeStyle='var(--red)';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(x1-10,y);ctx.lineTo(x2+10,y);ctx.stroke();ctx.beginPath();ctx.moveTo(x1-10,y);ctx.lineTo(x1-2,y-4);ctx.moveTo(x1-10,y);ctx.lineTo(x1-2,y+4);ctx.stroke();ctx.beginPath();ctx.moveTo(x2+10,y);ctx.lineTo(x2+2,y-4);ctx.moveTo(x2+10,y);ctx.lineTo(x2+2,y+4);ctx.stroke();ctx.fillStyle='var(--red)';ctx.font='bold 13px sans-serif';ctx.textAlign='center';ctx.fillText(lb,(x1+x2)/2,y-6);}
 dim(botY+28,'D = '+D.toFixed(1),ctrX-rD,ctrX+rD);dim(topY-20,'d = '+d.toFixed(1),ctrX-rd,ctrX+rd);const rx=Math.max(ctrX+rD,ctrX+rd)+50;ctx.strokeStyle='var(--green)';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(rx,botY);ctx.lineTo(rx,topY);ctx.stroke();ctx.beginPath();ctx.moveTo(rx,botY);ctx.lineTo(rx-5,botY-8);ctx.moveTo(rx,botY);ctx.lineTo(rx+5,botY-8);ctx.stroke();ctx.beginPath();ctx.moveTo(rx,topY);ctx.lineTo(rx-5,topY+8);ctx.moveTo(rx,topY);ctx.lineTo(rx+5,topY+8);ctx.stroke();ctx.fillStyle='var(--green)';ctx.font='bold 13px sans-serif';ctx.textAlign='left';ctx.fillText('L = '+L.toFixed(1),rx+8,(topY+botY)/2+5);if(A){const ang=A*Math.PI/180;ctx.strokeStyle='var(--purple)';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(ctrX-rD,botY,25,Math.PI*1.5,Math.PI*1.5+ang);ctx.stroke();ctx.fillStyle='var(--purple)';ctx.font='12px sans-serif';ctx.textAlign='left';ctx.fillText('α = '+A.toFixed(1)+'°',ctrX-rD-20,botY-30);}if(weight!==undefined&&weight!==null){ctx.fillStyle='var(--txt)';ctx.font='13px sans-serif';ctx.textAlign='center';ctx.fillText('重量: '+weight.toFixed(3)+' kg',ctrX,topY-45);}}
 coneDraw(null);$('coneClear').click();
+
+// === 冷鍛計算機 ===
+function getYield(){const c=parseFloat($('cfYieldC')?.value);if(c>0)return c;const m=$('cfMaterial')?.value;const mp={lowC:250,midC:350,alloy:500,stainless:520,aluminum:150,copper:200};return mp[m]||350;}
+function getCF(){const t=$('cfType')?.value;const mp={heading:2.5,extrude_fwd:3.5,extrude_bwd:2.5,trimming:1.0,coining:5.0};return mp[t]||2.5;}
+function cfAreaFromDia(){const d=parseFloat($('cfDia')?.value);if(d>0){$('cfArea').value=(Math.PI*Math.pow(d/2,2)).toFixed(2);}cfTon();}
+function cfTon(){const a=parseFloat($('cfArea')?.value);const r=$('tonResult');if(!a||a<=0){r.innerHTML='<em>請輸入面積（或直徑自動換算）</em>';return;}const Y=getYield(),C=getCF(),S=parseFloat($('cfSF')?.value)||1.3;const fN=C*Y*a*S,fT=fN/9800;const tn=$('cfType')?.selectedOptions[0]?.text||'';r.innerHTML='<strong>成形方式：</strong>'+tn+' (拘束係數 C='+C+')<br><strong>降伏強度：</strong>'+Y+' MPa | <strong>安全係數：</strong>'+S+'<br><strong>投影面積：</strong>'+a.toFixed(2)+' mm²<hr><span class="cf-big">🔩 '+fT.toFixed(1)+' 噸</span> （'+(fN/1000).toFixed(1)+' kN）'+(fT>500?'<br><span class="cf-warn">⚠ 噸位偏高</span>':'');}
+function cfRed(){const wd=parseFloat($('cfWire')?.value);const areas=[...document.querySelectorAll('.sta-area')].map(el=>parseFloat(el.value)).filter(v=>!isNaN(v)&&v>0);const r=$('redResult');if(!wd||wd<=0||areas.length===0){r.innerHTML='<em>請輸入線徑與至少一個工位面積</em>';return;}const wa=Math.PI*Math.pow(wd/2,2);let h='<strong>線材斷面積：</strong>'+wa.toFixed(2)+' mm²<br><br>';let pa=wa;areas.forEach((a,i)=>{const red=((pa-a)/pa)*100;const cls=(i===0&&red>65)||(i>0&&red>35)?'cf-warn':'cf-ok';if(red<0){h+='<span class="cf-bad">⚠ 工位'+(i+1)+'面積大於前站</span><br>';}else{h+='工位'+(i+1)+'：'+pa.toFixed(2)+' → '+a.toFixed(2)+' mm² <strong>減面率 <span class="'+cls+'">'+red.toFixed(1)+'%</span></strong>'+(red>65||(i>0&&red>35)?' <span class="cf-warn">⚠</span>':'')+'<br>';}pa=a;});const tr=((wa-areas[areas.length-1])/wa)*100;h+='<br><strong>總減面率：<span class="cf-big">'+tr.toFixed(1)+'%</span></strong>'+(tr>80?'<br><span class="cf-warn">⚠ 總減面率偏高</span>':'');r.innerHTML=h;}
+function cfAddSta(){const c=$('staInputs'),d=document.createElement('div');d.className='cf-field';d.style.marginTop='4px';const n=c.children.length+1;d.innerHTML='<input type="number" placeholder="工位'+n+' 斷面積" step="0.01" class="sta-area" oninput="cfRed()">';c.appendChild(d);}
+function cfDia2Area(){const d=parseFloat($('cfDiaIn')?.value);if(d>0){alert('直徑 '+d+' mm → 面積 = '+(Math.PI*Math.pow(d/2,2)).toFixed(2)+' mm²\n請複製貼到上方工位輸入欄');$('cfDiaIn').value='';}}
+function cfUpset(){const d=parseFloat($('cfUDia')?.value),L=parseFloat($('cfULen')?.value);const r=$('upsetResult');if(!d||!L||d<=0||L<=0){r.innerHTML='<em>請輸入直徑與墩粗長度</em>';return;}const S=L/d;let st,cls;if(S<=2.0){st='✅安全，無挫曲風險';cls='cf-ok';}else if(S<=2.5){st='⚠邊界值，需注意模具導向';cls='cf-warn';}else{st='❌易挫曲！需分段墩粗';cls='cf-bad';}r.innerHTML='<strong>墩粗比 S = '+L+'/'+d+' = </strong><span class="cf-big '+cls+'">'+S.toFixed(2)+'</span><br><span class="'+cls+'">'+st+'</span>'+(S>2.5?'<br><span class="cf-warn">建議分兩段墩粗</span>':'');}
+function cfUtil(){const pw=parseFloat($('cfPW')?.value),ww=parseFloat($('cfWW')?.value);const r=$('utilResult');if(!pw||!ww||pw<=0||ww<=0){r.innerHTML='<em>請輸入成品與用料重量</em>';return;}const u=(pw/ww)*100,sc=ww-pw;let cls=u>=90?'cf-ok':u>=75?'cf-warn':'cf-bad';r.innerHTML='<strong>利用率：</strong><span class="cf-big '+cls+'">'+u.toFixed(1)+'%</span><br><strong>廢料：</strong>'+sc.toFixed(2)+' g/件 ('+(100-u).toFixed(1)+'%)'+(u>=95?'<br><span class="cf-ok">👍優秀</span>':u<75?'<br><span class="cf-warn">⚠廢料偏高</span>':'');}
 </script>
 </body>
 </html>
