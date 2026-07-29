@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>工具箱</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#fff;--bg2:#f7f7f5;--bg3:#f0efe9;--txt:#1a1a18;--txt2:#5f5e5a;--txt3:#888780;--border:rgba(0,0,0,0.12);--border2:rgba(0,0,0,0.22);--purple:#534AB7;--purple-light:#EEEDFE;--teal:#0F6E56;--teal-light:#E1F5EE;--amber:#BA7517;--amber-light:#FAEEDA;--green:#3B6D11;--green-light:#EAF3DE;--blue:#185FA5;--blue-light:#E6F1FB;--coral:#C4521A;--coral-light:#FAECE7;--red:#A32D2D;--red-light:#FCEBEB;--pink:#B23B7D;--pink-light:#FAE8F2;--radius:12px;--radius-sm:8px;--shadow:0 2px 8px rgba(0,0,0,0.08)}
+[data-theme="dark"]{--bg:#1c1c1a;--bg2:#252523;--bg3:#2e2e2b;--txt:#f0efe9;--txt2:#b4b2a9;--txt3:#888780;--border:rgba(255,255,255,0.12);--border2:rgba(255,255,255,0.22);--purple-light:#26215C;--teal-light:#04342C;--amber-light:#412402;--blue-light:#042C53;--red-light:#501313}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg3);color:var(--txt);min-height:100vh;font-size:15px;line-height:1.6}
+.app{max-width:680px;margin:0 auto;padding:0 0 20px}
+.header{background:var(--bg);border-bottom:0.5px solid var(--border);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.header-left{display:flex;align-items:center;gap:10px}
+.header-title{font-size:17px;font-weight:600}
+.back-btn{background:none;border:none;font-size:20px;cursor:pointer;color:var(--txt);padding:4px 8px;border-radius:var(--radius-sm)}
+.back-btn:hover{background:var(--bg3)}
+.theme-btn{background:none;border:none;font-size:18px;cursor:pointer;padding:6px;border-radius:var(--radius-sm)}
+.theme-btn:hover{background:var(--bg3)}
+.app-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:16px}
+.app-card{background:var(--bg);border-radius:var(--radius);padding:20px 16px;text-align:center;cursor:pointer;transition:transform 0.15s,box-shadow 0.15s;border:0.5px solid var(--border);box-shadow:var(--shadow)}
+.app-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.12)}
+.app-card:active{transform:translateY(0)}
+.app-icon{font-size:36px;margin-bottom:10px}
+.app-name{font-weight:600;font-size:14px;color:var(--txt)}
+.panel{display:none;padding:16px}
+.panel.active{display:block}
+.section{background:var(--bg);border-radius:var(--radius);padding:16px;margin-bottom:12px;border:0.5px solid var(--border)}
+.section-title{font-size:12px;color:var(--txt3);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px}
+textarea,input[type="text"],input[type="password"],input[type="url"],input[type="number"]{width:100%;border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;font-size:15px;background:var(--bg);color:var(--txt);font-family:inherit;resize:none}
+textarea:focus,input:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 3px var(--purple-light)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 18px;border-radius:var(--radius-sm);border:none;font-size:14px;font-weight:500;cursor:pointer;transition:opacity 0.15s}
+.btn:active{opacity:0.85}
+.btn-primary{background:var(--purple);color:#fff}
+.btn-secondary{background:var(--bg2);color:var(--txt)}
+.btn-success{background:var(--green);color:#fff}
+.btn-danger{background:var(--red);color:#fff}
+.btn-sm{padding:6px 12px;font-size:13px}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap}
+.btn-row .btn{flex:1;min-width:100px}
+.result-box{background:var(--teal-light);border-radius:var(--radius-sm);padding:14px;margin-top:12px;font-size:14px;word-break:break-all;display:none}
+.result-box.show{display:block}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--txt);color:var(--bg);padding:10px 20px;border-radius:20px;font-size:14px;opacity:0;transition:transform 0.3s,opacity 0.3s;z-index:1000;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+/* 圓棒 */
+#panel-round-weight .mat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+#panel-round-weight .mat-btn{padding:10px 6px;border:2px solid var(--border);border-radius:10px;background:var(--bg);color:var(--txt);cursor:pointer;font-size:0.9em;text-align:center;transition:all 0.2s}
+#panel-round-weight .mat-btn .dns{font-size:0.72em;color:var(--txt3);display:block;margin-top:2px}
+#panel-round-weight .mat-btn.active{border-color:var(--blue);background:var(--blue-light);font-weight:600}
+#panel-round-weight .seg-row{display:flex;gap:6px;align-items:center;margin-bottom:8px}
+#panel-round-weight .seg-label{width:28px;font-weight:700;color:var(--blue);font-size:0.85em;text-align:center}
+#panel-round-weight .seg-input{flex:1;display:flex;align-items:center;gap:4px}
+#panel-round-weight .seg-input input{flex:1;min-width:0;padding:8px 6px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--txt);font-size:1em}
+#panel-round-weight .seg-input input:focus{outline:none;border-color:var(--blue)}
+#panel-round-weight .seg-unit{font-size:0.75em;color:var(--txt3);width:22px}
+#panel-round-weight .del-btn{background:transparent;border:none;color:var(--red);font-size:1.2em;cursor:pointer;padding:4px 6px;border-radius:6px}
+#panel-round-weight .del-btn:hover{background:var(--red-light)}
+#panel-round-weight .add-btn{width:100%;padding:10px;border:2px dashed var(--border);border-radius:10px;background:transparent;color:var(--txt3);cursor:pointer;font-size:0.9em;margin-top:4px}
+#panel-round-weight .add-btn:hover{border-color:var(--blue);color:var(--blue)}
+#panel-round-weight .res-big{font-size:2.2em;font-weight:800;color:var(--blue);letter-spacing:1px;text-align:center}
+#panel-round-weight .res-label{font-size:0.8em;color:var(--txt3);margin-bottom:8px;text-align:center}
+#panel-round-weight .res-sub{display:flex;justify-content:center;gap:24px;font-size:0.85em;color:var(--txt3);margin-bottom:12px}
+#panel-round-weight .res-sub b{color:var(--txt)}
+#panel-round-weight .dtbl{width:100%;border-collapse:collapse;font-size:0.82em}
+#panel-round-weight .dtbl th,#panel-round-weight .dtbl td{padding:6px 4px;border-bottom:1px solid var(--border);text-align:center}
+#panel-round-weight .dtbl th{color:var(--txt3);font-weight:500}
+#panel-round-weight .dtbl .tot{font-weight:700;color:var(--blue)}
+#panel-round-weight .svg-wrap{background:var(--bg);border-radius:12px;padding:8px;border:1px solid var(--border)}
+#panel-round-weight .svg-wrap svg{width:100%;height:220px;display:block}
+/* 錐形件 */
+#panel-cone .cone-form{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+#panel-cone .cone-field{margin-bottom:16px}
+#panel-cone .cone-field label{display:block;font-size:13px;font-weight:600;color:var(--txt);margin-bottom:4px}
+#panel-cone .cone-field input{width:100%;padding:10px 12px;border:2px solid var(--border);border-radius:10px;font-size:15px;background:var(--bg);color:var(--txt);outline:none}
+#panel-cone .cone-field input:focus{border-color:var(--blue);background:var(--blue-light)}
+#panel-cone .cone-field input.auto{border-color:#f5a623;background:var(--amber-light)}
+#panel-cone .cone-field input:disabled{opacity:0.6;cursor:not-allowed}
+#panel-cone .cone-field .unit{font-size:12px;color:var(--txt3);margin-top:2px}
+#panel-cone .badge{display:inline-block;font-size:10px;border-radius:4px;padding:1px 6px;margin-left:6px;vertical-align:middle}
+#panel-cone .badge-known{background:var(--blue);color:#fff}
+#panel-cone .badge-auto{background:var(--amber);color:#fff}
+#panel-cone .badge-empty{background:#bbb;color:#fff}
+#panel-cone .cone-result{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);border-radius:14px;padding:18px 20px;color:#fff;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+#panel-cone .cone-result .rlbl{font-size:12px;opacity:0.8}
+#panel-cone .cone-result .rval{font-size:22px;font-weight:700}
+#panel-cone .cone-result .rval small{font-size:13px;font-weight:400;opacity:0.7}
+#panel-cone .cone-err{background:var(--red-light);color:var(--red);padding:10px 14px;border-radius:10px;font-size:13px;display:none;margin-top:12px}
+#panel-cone .cone-err.show{display:block}
+#panel-cone .cone-canvas{background:var(--bg);border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,0.06);max-width:100%;height:auto}
+#panel-cone .cone-hint{font-size:12px;color:var(--txt3);margin-bottom:8px}
+#panel-cone .cone-legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--txt3);margin-top:4px}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="header-left">
+      <button class="back-btn" id="backBtn" style="display:none">←</button>
+      <div class="header-title" id="headerTitle">工具箱</div>
+    </div>
+    <button class="theme-btn" id="themeBtn">🌙</button>
+  </div>
+
+  <div class="app-grid" id="homeScreen">
+    <div class="app-card" data-app="qrcode">
+      <div class="app-icon">📱</div>
+      <div class="app-name">QR 碼生成器</div>
+    </div>
+    <div class="app-card" data-app="round-weight">
+      <div class="app-icon">🔩</div>
+      <div class="app-name">圓棒重量計算器</div>
+    </div>
+    <div class="app-card" data-app="cone">
+      <div class="app-icon">📐</div>
+      <div class="app-name">錐形件計算機</div>
+    </div>
+  </div>
+
+  <!-- QR 碼 -->
+  <div class="panel" id="panel-qrcode">
+    <div class="section">
+      <div class="section-title">輸入內容</div>
+      <textarea id="qrInput" rows="3" placeholder="輸入文字、網址或其他內容..."></textarea>
+    </div>
+    <div class="section">
+      <div class="section-title">大小</div>
+      <input type="range" id="qrSize" min="100" max="300" value="200" style="width:100%">
+      <div style="text-align:center;color:var(--txt3);font-size:12px;margin-top:4px"><span id="qrSizeVal">200</span>x<span id="qrSizeVal2">200</span> px</div>
+    </div>
+    <div class="btn-row"><button class="btn btn-primary" id="genQR">生成 QR 碼</button></div>
+    <div class="section" id="qrResult" style="display:none;text-align:center">
+      <canvas id="qrCanvas"></canvas>
+      <div style="margin-top:12px"><button class="btn btn-secondary btn-sm" id="saveQR">下載圖片</button></div>
+    </div>
+  </div>
+
+  <!-- 圓棒重量計算器 -->
+  <div class="panel" id="panel-round-weight">
+    <div class="section">
+      <div class="section-title">材質選擇</div>
+      <div class="mat-grid" id="matGrid"></div>
+    </div>
+    <div class="section">
+      <div class="section-title">預覽圖形（階梯軸側視圖）</div>
+      <div class="svg-wrap">
+        <svg id="rwPreview" viewBox="0 0 600 220" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <marker id="arrL" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M8,0 L0,4 L8,8" fill="none" stroke="var(--txt3)" stroke-width="1"/></marker>
+            <marker id="arrR" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8" fill="none" stroke="var(--txt3)" stroke-width="1"/></marker>
+          </defs>
+        </svg>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-title">段落尺寸（⌀ × L，單位 mm）</div>
+      <div id="rwSegments"></div>
+      <button class="add-btn" onclick="rwAddSeg()">+ 新增段落</button>
+    </div>
+    <div class="section">
+      <div class="section-title">計算結果</div>
+      <div class="res-big" id="rwTotalW">0.000</div>
+      <div class="res-label">總重量 (g)</div>
+      <div class="res-sub"><span>總體積 <b id="rwTotalV">0</b> cm³</span><span>材質 <b id="rwMatName">碳鋼</b></span></div>
+      <table class="dtbl" id="rwDetail"></table>
+    </div>
+  </div>
+
+  <!-- 錐形件計算機 -->
+  <div class="panel" id="panel-cone">
+    <div class="section">
+      <div class="section-title">填寫任意三項已知尺寸，自動計算未知項與重量</div>
+      <div class="cone-hint">💡 灰色輸入框 = 待求項（自動計算），一般碳鋼 ρ = 7.85 g/cm³</div>
+      <div class="cone-form" id="coneFields">
+        <div class="cone-field"><label>大端直徑 <span class="badge badge-known" id="bdgD">已知</span></label><input type="number" id="inpD" step="any" min="0" placeholder="mm"><div class="unit">mm</div></div>
+        <div class="cone-field"><label>小端直徑 <span class="badge badge-known" id="bdgd">已知</span></label><input type="number" id="inpd" step="any" min="0" placeholder="mm"><div class="unit">mm</div></div>
+        <div class="cone-field"><label>半角（半錐角） <span class="badge badge-known" id="bdgA">已知</span></label><input type="number" id="inpA" step="any" min="0" max="89" placeholder="°"><div class="unit">度 (°)</div></div>
+        <div class="cone-field"><label>錐長 <span class="badge badge-known" id="bdgL">已知</span></label><input type="number" id="inpL" step="any" min="0" placeholder="mm"><div class="unit">mm</div></div>
+      </div>
+      <div class="btn-row"><button class="btn btn-primary" id="coneCalc">🧮 計算</button><button class="btn btn-secondary" id="coneClear">↺ 清空</button></div>
+      <div class="cone-err" id="coneErr"></div>
+    </div>
+    <div class="section">
+      <div class="cone-result" id="coneResult">
+        <div class="rval" id="coneR1" style="text-align:center">待求項：—</div>
+        <div style="text-align:center"><div class="rlbl">總重量（一般碳鋼）</div><div class="rval" id="coneR2">0.000 <small>kg</small></div></div>
+      </div>
+      <div class="cone-hint" style="margin-top:8px;text-align:center">📐 錐形件截面示意圖</div>
+      <canvas id="coneCanvas" class="cone-canvas" width="380" height="360"></canvas>
+      <div class="cone-legend"><span><span class="ldot" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--blue);margin-right:4px"></span> 已知</span><span><span class="ldot" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--amber);margin-right:4px"></span> 自動計算</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+function $(id){return document.getElementById(id)}
+function showToast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000)}
+
+// 主題
+const savedTheme=localStorage.getItem('theme')||'light';
+document.documentElement.dataset.theme=savedTheme;
+$('themeBtn').textContent=savedTheme==='dark'?'☀️':'🌙';
+$('themeBtn').onclick=()=>{const now=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=now;localStorage.setItem('theme',now);$('themeBtn').textContent=now==='dark'?'☀️':'🌙';};
+
+// 導航
+const titles={'qrcode':'QR 碼生成器','round-weight':'圓棒重量計算器','cone':'錐形件計算機'};
+document.querySelectorAll('.app-card').forEach(card=>{card.onclick=()=>{const app=card.dataset.app;$('homeScreen').style.display='none';$('backBtn').style.display='block';$('headerTitle').textContent=titles[app];document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));$(panel-${app}).classList.add('active');if(app==='round-weight')rwInit();};});
+$('backBtn').onclick=()=>{$('homeScreen').style.display='grid';$('backBtn').style.display='none';$('headerTitle').textContent='工具箱';document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));};
+
+// QR 碼
+$('qrSize').oninput=()=>{const v=$('qrSize').value;$('qrSizeVal').textContent=v;$('qrSizeVal2').textContent=v;};
+$('genQR').onclick=()=>{
+  const text=$('qrInput').value.trim();if(!text){showToast('請輸入內容');return;}
+  const size=+$('qrSize').value,canvas=$('qrCanvas');canvas.width=size;canvas.height=size;
+  const ctx=canvas.getContext('2d'),n=25,m=Array.from({length:n},()=>Array(n).fill(0));
+  function pf(r,c){for(let i=-1;i<=7;i++)for(let j=-1;j<=7;j++){const rr=r+i,cc=c+j;if(rr<0||rr>=n||cc<0||cc>=n)continue;if(i<0||i>6||j<0||j>6){m[rr][cc]=0;continue;}if(i===0||i===6||j===0||j===6){m[rr][cc]=1;continue;}if(i>=2&&i<=4&&j>=2&&j<=4){m[rr][cc]=1;continue;}m[rr][cc]=0;}}
+  pf(0,0);pf(0,n-7);pf(n-7,0);for(let i=8;i<n-8;i++){m[6][i]=i%2===0?1:0;m[i][6]=i%2===0?1:0;}
+  const db=[];for(let i=0;i<text.length;i++){const b=text.charCodeAt(i);for(let j=7;j>=0;j--)db.push((b>>j)&1);}
+  while(db.length<200)db.push(0);let di=0;
+  for(let col=n-1;col>=0;col-=2){if(col===6)col=5;for(let row=0;row<n;row++){for(let c of[col,col-1]){if(c<0)continue;if(m[row][c]!==0||(row===6||c===6))continue;if(di<db.length)m[row][c]=db[di++];else m[row][c]=di%2;}}}
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,size,size);ctx.fillStyle='#000';const ms=size/n;
+  for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(m[r][c])ctx.fillRect(c*ms,r*ms,ms,ms);
+  $('qrResult').style.display='block';
+};
+$('saveQR').onclick=()=>{const a=document.createElement('a');a.download='qrcode.png';a.href=$('qrCanvas').toDataURL();a.click();showToast('已下載');};
+
+// 圓棒重量計算器
+const RW_MATS={carbon:{name:'碳鋼',density:7.85},tungsten:{name:'鎢鋼',density:14.5},stainless:{name:'不鏽鋼',density:7.93},aluminum:{name:'鋁合金',density:2.70},copper:{name:'銅',density:8.96},brass:{name:'黃銅',density:8.50}};
+let rwMat='carbon',rwSegs=JSON.parse(localStorage.getItem('rwSeqs')||'[{"d":50,"l":100},{"d":30,"l":80}]'),rwID=false;
+function rwInit(){if(rwID)return;const sm=localStorage.getItem('rwMat');if(sm&&RW_MATS[sm])rwMat=sm;rwMats();rwSegsR();rwCalc();rwID=true;}
+function rwMats(){$('matGrid').innerHTML=Object.entries(RW_MATS).map(([k,m])=>`<button class="mat-btn ${k===rwMat?'active':''}" onclick="rwMat='${k}';localStorage.setItem('rwMat','${k}');rwMats();rwCalc();">${m.name}<span class="dns">${m.density} g/cm³</span></button>`).join('');}
+function rwSegsR(){$('rwSegments').innerHTML=rwSegs.map((s,i)=>`<div class="seg-row"><span class="seg-label">${i+1}</span><div class="seg-input"><span style="font-size:0.85em;color:var(--txt3)">⌀</span><input type="number" value="${s.d}" min="0" step="0.1" onchange="rwUpd(${i},'d',this.value)"><span class="seg-unit">mm</span></div><div class="seg-input"><span style="font-size:0.85em;color:var(--txt3)">L</span><input type="number" value="${s.l}" min="0" step="0.1" onchange="rwUpd(${i},'l',this.value)"><span class="seg-unit">mm</span></div>${rwSegs.length>1?`<button class="del-btn" onclick="rwDel(${i})">✕</button>`:''}</div>`).join('');}
+function rwUpd(i,f,v){rwSegs[i][f]=parseFloat(v)||0;localStorage.setItem('rwSeqs',JSON.stringify(rwSegs));rwCalc();}
+function rwAddSeg(){const last=rwSegs[rwSegs.length-1];rwSegs.push({d:last?last.d:20,l:50});localStorage.setItem('rwSeqs',JSON.stringify(rwSegs));rwSegsR();rwCalc();}
+function rwDel(i){rwSegs.splice(i,1);localStorage.setItem('rwSeqs',JSON.stringify(rwSegs));rwSegsR();rwCalc();}
+function rwCalc(){const d=RW_MATS[rwMat].density;let tv=0;const dt=[];rwSegs.forEach((s,i)=>{const r=s.d/2,vm=Math.PI*r*r*s.l,vc=vm/1000,wg=vc*d;tv+=vm;dt.push({i:i+1,d:s.d,l:s.l,v:vc,w:wg});});const tvc=tv/1000,twg=tvc*d;$('rwTotalW').textContent=twg.toFixed(3);$('rwTotalV').textContent=tvc.toFixed(2);$('rwMatName').textContent=RW_MATS[rwMat].name;$('rwDetail').innerHTML=`<tr><th>#</th><th>⌀mm</th><th>Lmm</th><th>cm³</th><th>g</th></tr>${dt.map(d=><tr><td>${d.i}</td><td>${d.d}</td><td>${d.l}</td><td>${d.v.toFixed(2)}</td><td>${d.w.toFixed(3)}</td></tr>).join('')}<tr class="tot"><td colspan="3">合計</td><td>${tvc.toFixed(2)}</td><td>${twg.toFixed(3)}</td></tr>`;rwSvg();}
+function rwSvg(){const svg=$('rwPreview'),W=600,H=220;const maxD=Math.max(...rwSegs.map(s=>s.d),1),totalL=rwSegs.reduce((s,x)=>s+x.l,0)||1;const padX=50,padTop=40,padBot=70,availW=W-padX*2,availH=H-padTop-padBot;const scale=Math.min(availW/totalL,availH/maxD),cy=padTop+availH/2;const startX=(W-totalL*scale)/2,clr=['#e3f2fd','#fff3e0','#e8f5e9','#fce4ec','#f3e5f5','#e0f7fa'];let parts='<line x1="20" y1="'+cy+'" x2="'+(W-20)+'" y2="'+cy+'" stroke="var(--txt3)" stroke-dasharray="12,3,3,3" stroke-width="1"/>';let x=startX;rwSegs.forEach((s,i)=>{const sw=s.l*scale,sh=s.d*scale,y=cy-sh/2,fi=i%6;parts+=<rect x="${x}" y="${y}" width="${sw}" height="${sh}" fill="${clr[fi]}" stroke="var(--blue)" stroke-width="2" rx="2"/>;const dimY=y-12;parts+=<line x1="${x+sw/2}" y1="${y}" x2="${x+sw/2}" y2="${dimY}" stroke="var(--txt3)" stroke-width="0.5"/><text x="${x+sw/2}" y="${dimY-3}" text-anchor="middle" fill="var(--txt)" font-size="11" font-weight="700">⌀${s.d}</text>;const lenY=cy+sh/2+14;parts+=<line x1="${x}" y1="${cy+sh/2}" x2="${x}" y2="${lenY}" stroke="var(--txt3)" stroke-width="0.5"/><line x1="${x+sw}" y1="${cy+sh/2}" x2="${x+sw}" y2="${lenY}" stroke="var(--txt3)" stroke-width="0.5"/><line x1="${x}" y1="${lenY-4}" x2="${x+sw}" y2="${lenY-4}" stroke="var(--txt3)" stroke-width="0.8" marker-start="url(#arrR)" marker-end="url(#arrR)"/><text x="${x+sw/2}" y="${lenY+12}" text-anchor="middle" fill="var(--txt)" font-size="11" font-weight="600">${s.l}</text>;x+=sw;});const totalY=cy+maxD*scale/2+42;parts+=<line x1="${startX}" y1="${totalY-6}" x2="${startX}" y2="${totalY+2}" stroke="var(--blue)" stroke-width="0.8"/><line x1="${startX+totalL*scale}" y1="${totalY-6}" x2="${startX+totalL*scale}" y2="${totalY+2}" stroke="var(--blue)" stroke-width="0.8"/><line x1="${startX}" y1="${totalY-2}" x2="${startX+totalL*scale}" y2="${totalY-2}" stroke="var(--blue)" stroke-width="1" marker-start="url(#arrL)" marker-end="url(#arrR)"/><text x="${startX+totalL*scale/2}" y="${totalY+14}" text-anchor="middle" fill="var(--blue)" font-size="12" font-weight="800">總長 ${totalL} mm</text>;svg.innerHTML=svg.querySelector('defs').outerHTML+parts;}
+
+// 錐形件計算機
+const CI={D:$('inpD'),d:$('inpd'),A:$('inpA'),L:$('inpL')},CB={D:$('bdgD'),d:$('bdgd'),A:$('bdgA'),L:$('bdgL')},CK=['D','d','A','L'];let coneAuto=null;
+function coneD(){const f=CK.filter(k=>{const v=parseFloat(CI[k].value);return!isNaN(v)&&v>0;});const e=CK.filter(k=>!f.includes(k));coneAuto=f.length===3&&e.length===1?e[0]:null;CK.forEach(k=>{const v=parseFloat(CI[k].value),fill=!isNaN(v)&&v>0;CI[k].classList.toggle('auto',k===coneAuto);CI[k].disabled=k===coneAuto;if(k===coneAuto){CB[k].textContent='自動';CB[k].className='badge badge-auto';}else if(fill){CB[k].textContent='已知';CB[k].className='badge badge-known';}else{CB[k].textContent='待填';CB[k].className='badge badge-empty';}});}
+CK.forEach(k=>CI[k].addEventListener('input',coneD));coneD();
+$('coneClear').onclick=()=>{CK.forEach(k=>CI[k].value='');$('coneR1').textContent='待求項：—';$('coneR2').innerHTML='0.000 <small>kg</small>';$('coneErr').classList.remove('show');coneD();coneDraw(null);};
+$('coneCalc').onclick=()=>{const vals={};CK.forEach(k=>vals[k]=parseFloat(CI[k].value));const f=CK.filter(k=>!isNaN(vals[k])&&vals[k]>0);if(f.length<3){$('coneErr').textContent='請至少填入三項已知尺寸（正值）';$('coneErr').classList.add('show');return;}$('coneErr').classList.remove('show');const d2r=d=>d*Math.PI/180,r2d=r=>r*180/Math.PI;let res={...vals},ck=null;if(f.length===3){const m=CK.find(k=>!f.includes(k));ck=m;switch(m){case'D':res.D=vals.d+2*vals.L*Math.tan(d2r(vals.A));break;case'd':res.d=vals.D-2*vals.L*Math.tan(d2r(vals.A));break;case'A':res.A=r2d(Math.atan((vals.D-vals.d)/(2*vals.L)));break;case'L':res.L=(vals.D-vals.d)/(2*Math.tan(d2r(vals.A)));break;}}if(res.D<=res.d){$('coneErr').textContent='大端直徑 (D) 必須大於小端直徑 (d)';$('coneErr').classList.add('show');return;}if(res.D&&res.d&&res.L){const Dc=res.D/10,dc=res.d/10,Lc=res.L/10;res.weight=(1/3)*Math.PI*Lc*((Dc/2)**2+(Dc/2)*(dc/2)+(dc/2)**2)*7.85/1000;$('coneR2').innerHTML=res.weight.toFixed(3)+' <small>kg</small>';}if(ck){const lb={D:'大端直徑 (D)',d:'小端直徑 (d)',A:'半角 (A)',L:'錐長 (L)'},un={D:'mm',d:'mm',A:'°',L:'mm'};CI[ck].value=res[ck].toFixed(3);$('coneR1').innerHTML='<strong>'+lb[ck]+' = '+res[ck].toFixed(3)+'</strong> '+un[ck];}else $('coneR1').textContent='所有尺寸已知 ✅';coneD();coneDraw(res.D,res.d,res.L,res.A,res.weight);};
+function coneDraw(D,d,L,A,weight){const c=$('coneCanvas'),W=c.width,H=c.height,ctx=c.getContext('2d');ctx.clearRect(0,0,W,H);if(!D||!d||!L){ctx.fillStyle='var(--bg2)';ctx.fillRect(0,0,W,H);ctx.fillStyle='var(--txt3)';ctx.font='15px sans-serif';ctx.textAlign='center';ctx.fillText('填寫尺寸後查看預覽',W/2,H/2);return;}const scale=Math.min((W-80)/Math.max(D,d),(H-100)/L),rD=D*scale/2,rd=d*scale/2,rL=L*scale,ctrX=W/2,botY=H-40,topY=botY-rL;ctx.strokeStyle='var(--txt)';ctx.lineWidth=2.5;ctx.fillStyle='rgba(74,144,217,0.15)';ctx.beginPath();ctx.moveTo(ctrX-rD,botY);ctx.lineTo(ctrX+rD,botY);ctx.lineTo(ctrX+rd,topY);ctx.lineTo(ctrX-rd,topY);ctx.closePath();ctx.fill();ctx.stroke();ctx.setLineDash([4,5]);ctx.strokeStyle='var(--txt3)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(ctrX,topY);ctx.lineTo(ctrX,botY+10);ctx.stroke();ctx.setLineDash([]);function dim(y,lb,x1,x2){ctx.strokeStyle='var(--red)';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(x1-10,y);ctx.lineTo(x2+10,y);ctx.stroke();ctx.beginPath();ctx.moveTo(x1-10,y);ctx.lineTo(x1-2,y-4);ctx.moveTo(x1-10,y);ctx.lineTo(x1-2,y+4);ctx.stroke();ctx.beginPath();ctx.moveTo(x2+10,y);ctx.lineTo(x2+2,y-4);ctx.moveTo(x2+10,y);ctx.lineTo(x2+2,y+4);ctx.stroke();ctx.fillStyle='var(--red)';ctx.font='bold 13px sans-serif';ctx.textAlign='center';ctx.fillText(lb,(x1+x2)/2,y-6);}
+dim(botY+28,'D = '+D.toFixed(1),ctrX-rD,ctrX+rD);dim(topY-20,'d = '+d.toFixed(1),ctrX-rd,ctrX+rd);const rx=Math.max(ctrX+rD,ctrX+rd)+50;ctx.strokeStyle='var(--green)';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(rx,botY);ctx.lineTo(rx,topY);ctx.stroke();ctx.beginPath();ctx.moveTo(rx,botY);ctx.lineTo(rx-5,botY-8);ctx.moveTo(rx,botY);ctx.lineTo(rx+5,botY-8);ctx.stroke();ctx.beginPath();ctx.moveTo(rx,topY);ctx.lineTo(rx-5,topY+8);ctx.moveTo(rx,topY);ctx.lineTo(rx+5,topY+8);ctx.stroke();ctx.fillStyle='var(--green)';ctx.font='bold 13px sans-serif';ctx.textAlign='left';ctx.fillText('L = '+L.toFixed(1),rx+8,(topY+botY)/2+5);if(A){const ang=A*Math.PI/180;ctx.strokeStyle='var(--purple)';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(ctrX-rD,botY,25,Math.PI*1.5,Math.PI*1.5+ang);ctx.stroke();ctx.fillStyle='var(--purple)';ctx.font='12px sans-serif';ctx.textAlign='left';ctx.fillText('α = '+A.toFixed(1)+'°',ctrX-rD-20,botY-30);}if(weight!==undefined&&weight!==null){ctx.fillStyle='var(--txt)';ctx.font='13px sans-serif';ctx.textAlign='center';ctx.fillText('重量: '+weight.toFixed(3)+' kg',ctrX,topY-45);}}
+coneDraw(null);$('coneClear').click();
+</script>
+</body>
+</html>
