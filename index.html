@@ -271,7 +271,7 @@ $('themeBtn').onclick=()=>{const now=document.documentElement.dataset.theme==='d
 
 // 導航
 const titles={'qrcode':'QR 碼生成器','round-weight':'圓棒重量計算器','cone':'錐形件計算機','coldforge':'多工位冷鍛計算機'};
-document.querySelectorAll('.app-card').forEach(card=>{card.onclick=()=>{const app=card.dataset.app;$('homeScreen').style.display='none';$('backBtn').style.display='block';$('headerTitle').textContent=titles[app];document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));$(panel-${app}).classList.add('active');if(app==='round-weight')rwInit();};});
+document.querySelectorAll('.app-card').forEach(card=>{card.onclick=()=>{const app=card.dataset.app;$('homeScreen').style.display='none';$('backBtn').style.display='block';$('headerTitle').textContent=titles[app];document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));$(`panel-${app}`).classList.add('active');if(app==='round-weight')rwInit();};});
 $('backBtn').onclick=()=>{$('homeScreen').style.display='grid';$('backBtn').style.display='none';$('headerTitle').textContent='工具箱';document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));};
 
 // QR 碼
